@@ -1,0 +1,26 @@
+ {
+	"CodeBuildWebpageFrontPorch": {
+		"Type": "AWS::CodeBuild::Project",
+		"Properties": {
+			"Name": "webpage_front_porch",
+			"ServiceRole": { "Fn::GetAtt": ["CodeBuildWebpageFrontPorchRole", "Arn"] },
+			"TimeoutInMinutes": 60,
+			"Source": {
+				"Type": "CODEPIPELINE",
+				"BuildSpec": "buildspec.yml"
+			},
+			"Artifacts": {
+				"Type": "CODEPIPELINE"
+			},
+			"Environment": {
+				"Type": "LINUX_CONTAINER",
+				"ComputeType": "BUILD_GENERAL1_SMALL",
+				"Image": "aws/codebuild/nodejs:8.11.0",
+				"EnvironmentVariables": [
+					{ "Name": "S3_BUCKET", "Type": "PLAINTEXT", "Value": { "Ref": "S3WebpageFrontPorch" } },
+					{ "Name": "DISTRIBUTION_ID", "Type": "PLAINTEXT", "Value": { "Ref": "CloudFrontStart" } }
+				]
+			}
+		}
+	}
+}

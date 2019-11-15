@@ -1,0 +1,65 @@
+{
+	"PipelineWebpageFrontPorch": {
+		"Type": "AWS::CodePipeline::Pipeline",
+		"Properties": {
+			"Name": "webpage_front_porch",
+			"ArtifactStore": {
+				"Location": { "Ref": "CodePipelineArtifacts" },
+				"Type": "S3"
+			},
+			"RoleArn": { "Fn::GetAtt": ["PipelineWebpageFrontPorchRole", "Arn" ] },
+			"Stages": [
+				{
+					"Name": "Get",
+					"Actions": [
+						{
+							"Name": "Material",
+							"RunOrder": 1,
+							"ActionTypeId": {
+								"Category": "Source",
+								"Owner": "ThirdParty",
+								"Provider": "GitHub",
+								"Version": "1"
+							},
+							"Configuration": {
+								"Owner": "0x4447",
+								"Repo": "0x4447_product_front_porch_webpage",
+								"Branch": { "Ref": "Stage" },
+								"PollForSourceChanges": false,
+								"OAuthToken": { "Ref": "GitHubToken" }
+							},
+							"OutputArtifacts": [
+								{
+									"Name": "material"
+								}
+							]
+						}
+					]
+				},
+				{
+					"Name": "Cast",
+					"Actions": [
+						{
+							"Name": "Mold",
+							"RunOrder": 1,
+							"InputArtifacts": [
+								{
+									"Name": "material"
+								}
+							],
+							"Configuration": {
+								"ProjectName": { "Ref": "CodeBuildWebpageFrontPorch" }
+							},
+							"ActionTypeId": {
+								"Category": "Build",
+								"Owner": "AWS",
+								"Provider": "CodeBuild",
+								"Version": "1"
+							}
+						}
+					]
+				}
+			]
+		}
+	}
+}

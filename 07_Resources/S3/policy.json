@@ -1,0 +1,20 @@
+{
+	"S3WebpageFrontPorchPolicy": {
+		"Type": "AWS::S3::BucketPolicy",
+		"Properties": {
+			"Bucket": { "Ref": "S3WebpageFrontPorch" },
+			"PolicyDocument": {
+				"Version": "2012-10-17",
+				"Statement": [
+					{
+						"Sid": "PublicReadGetObject",
+						"Effect": "Allow",
+						"Principal": "*",
+						"Action": "s3:GetObject",
+						"Resource": { "Fn::Sub": "arn:aws:s3:::${S3WebpageFrontPorch}/*" }
+					}
+				]
+			}
+		}
+	}
+}

@@ -1,0 +1,8 @@
+{
+	"Stage": {
+		"Description": "Select what type of environment are you deploying.",
+		"Type": "String",
+		"AllowedValues" : ["master", "development"],
+		"Default": "development"
+	}
+}

@@ -1,0 +1,21 @@
+{
+	"PipelineWebpageFrontPorchWebhook": {
+		"Type": "AWS::CodePipeline::Webhook",
+		"Properties": {
+			"Authentication": "GITHUB_HMAC",
+			"AuthenticationConfiguration": {
+				"SecretToken": { "Ref": "GitHubToken" }
+			},
+			"Filters": [
+				{
+					"JsonPath": "$.ref",
+					"MatchEquals": "refs/heads/{Branch}"
+				}
+			],
+			"TargetPipeline": { "Ref": "PipelineWebpageFrontPorch" },
+			"TargetAction": "Material",
+			"TargetPipelineVersion": { "Fn::GetAtt": [ "PipelineWebpageFrontPorch", "Version" ]},
+			"RegisterWithThirdParty": true
+		}
+	}
+}

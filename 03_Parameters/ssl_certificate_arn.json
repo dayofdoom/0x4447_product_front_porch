@@ -1,0 +1,6 @@
+{
+	"CertificateARN": {
+		"Description": "The ARN of a SSL Certificate.",
+		"Type": "String"
+	}
+}

@@ -1,0 +1,52 @@
+{
+	"CloudFrontStart": {
+		"Type": "AWS::CloudFront::Distribution",
+		"Properties": {
+			"DistributionConfig": {
+				"Comment": { "Ref": "DomainHomePage" },
+				"DefaultCacheBehavior": {
+					"ForwardedValues": {
+						"Cookies": {
+							"Forward": "none"
+						},
+						"QueryString": false
+					},
+					"MinTTL": 0,
+					"TargetOriginId": { "Fn::GetAtt": ["S3WebpageFrontPorch", "DomainName"] },
+					"ViewerProtocolPolicy": "redirect-to-https",
+					"AllowedMethods": ["GET", "HEAD"],
+					"CachedMethods": ["GET", "HEAD"],
+					"Compress": true,
+					"DefaultTTL": 86400,
+					"MaxTTL": 31536000,
+					"SmoothStreaming": false
+				},
+				"Enabled": true,
+				"Origins": [{
+					"DomainName": { "Fn::GetAtt": ["S3WebpageFrontPorch", "DomainName"] },
+					"Id": { "Fn::GetAtt": ["S3WebpageFrontPorch", "DomainName"] },
+					"CustomOriginConfig": {
+						"HTTPPort": 80,
+						"HTTPSPort": 443,
+						"OriginProtocolPolicy": "http-only",
+						"OriginSSLProtocols": ["TLSv1.1"]
+					}
+				}],
+				"Aliases": [ { "Fn::Sub": "${DomainHomePage}" } ],
+				"ViewerCertificate": {
+					"AcmCertificateArn" : { "Ref": "CertificateARN" },
+					"SslSupportMethod": "sni-only"
+				},
+				"DefaultRootObject": "home",
+				"HttpVersion": "http2",
+				"IPV6Enabled": true,
+				"PriceClass": "PriceClass_100",
+				"Restrictions": {
+					"GeoRestriction": {
+						"RestrictionType": "none"
+					}
+				}
+			}
+		}
+	}
+}
