@@ -1,0 +1,6 @@
+{
+	"ExpirationDayParam": {
+		"Description": "After how many days would you like the uploaded files to be removed?",
+		"Type": "String"
+	}
+}

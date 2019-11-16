@@ -17,7 +17,21 @@
 			"WebsiteConfiguration": {
 				"ErrorDocument": "error",
 				"IndexDocument": "home"
-			}
+			},
+			"Tags": [
+				{
+					"Key" : "Project Name",
+					"Value" : "Front Porch"
+				},
+				{
+					"Key" : "Author",
+					"Value" : "0x4447 LLC"
+				},
+				{
+					"Key" : "Info",
+					"Value" : "https://0x4447.com"
+				}
+			]
 		}
 	}
 }

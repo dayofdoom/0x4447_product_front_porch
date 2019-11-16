@@ -1,13 +1,13 @@
 {
-	"S3FrontPorchUploads": {
+	"S3FrontPorchDatabase": {
 		"Type": "AWS::S3::Bucket",
 		"Properties": {
-			"BucketName": { "Fn::Sub": "${DomainHomePage}-uploads" },
+			"BucketName": { "Fn::Sub": "${DomainHomePage}-database" },
 			"CorsConfiguration": {
 				"CorsRules": [
 					{
 						"AllowedHeaders": ["*"],
-						"AllowedMethods": ["PUT"],
+						"AllowedMethods": ["POST"],
 						"AllowedOrigins": ["*"],
 						"MaxAge": 3000
 					}
@@ -18,16 +18,6 @@
 				"BlockPublicPolicy": true,
 				"IgnorePublicAcls": true,
 				"RestrictPublicBuckets": true
-			},
-			"LifecycleConfiguration": {
-				"Rules": [
-					{
-						"Id": "ExpiationDay",
-						"ExpirationInDays": { "Ref": "ExpirationDayParam" },
-						"NoncurrentVersionExpirationInDays": { "Ref": "ExpirationDayParam" },
-						"Status": "Enabled"
-					}
-				]
 			},
 			"Tags": [
 				{

@@ -19,6 +19,7 @@
 				"EnvironmentVariables": [
 					{ "Name": "S3_BUCKET_FRONT_PORCH_SITE", "Type": "PLAINTEXT", "Value": { "Ref": "S3WebpageFrontPorch" } },
 					{ "Name": "S3_BUCKET_FRONT_PORCH_UPLOADS", "Type": "PLAINTEXT", "Value": { "Ref": "S3FrontPorchUploads" } },
+					{ "Name": "S3_BUCKET_FRONT_PORCH_DATABASE", "Type": "PLAINTEXT", "Value": { "Ref": "S3FrontPorchDatabase" } },
 					{ "Name": "DISTRIBUTION_ID", "Type": "PLAINTEXT", "Value": { "Ref": "CloudFrontStart" } },
 					{ "Name": "YEAR_ESTABLISHED", "Type": "PLAINTEXT", "Value": { "Ref": "YearEstablishedParam" } },
 					{ "Name": "COMPANY_NAME", "Type": "PLAINTEXT", "Value": { "Ref": "CompanyNameParam" } },

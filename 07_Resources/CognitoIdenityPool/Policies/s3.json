@@ -11,6 +11,11 @@
 						"Effect": "Allow",
 						"Action": "s3:PutObject",
 						"Resource": { "Fn::Sub": "arn:aws:s3:::${S3FrontPorchUploads}/*" }
+					},
+					{
+						"Effect": "Allow",
+						"Action": "s3:GetObject",
+						"Resource": { "Fn::Sub": "arn:aws:s3:::${S3FrontPorchDatabase}/emails.json" }
 					}
 				]
 			}
