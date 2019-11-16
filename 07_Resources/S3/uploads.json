@@ -1,0 +1,18 @@
+{
+	"S3FrontPorchUploads": {
+		"Type": "AWS::S3::Bucket",
+		"Properties": {
+			"BucketName": "0x4447-front-porch-uploads",
+			"CorsConfiguration": {
+				"CorsRules": [
+					{
+						"AllowedHeaders": ["*"],
+						"AllowedMethods": ["PUT"],
+						"AllowedOrigins": ["*"],
+						"MaxAge": 3000
+					}
+				]
+			}
+		}
+	}
+}

@@ -17,8 +17,13 @@
 				"ComputeType": "BUILD_GENERAL1_SMALL",
 				"Image": "aws/codebuild/nodejs:8.11.0",
 				"EnvironmentVariables": [
-					{ "Name": "S3_BUCKET", "Type": "PLAINTEXT", "Value": { "Ref": "S3WebpageFrontPorch" } },
-					{ "Name": "DISTRIBUTION_ID", "Type": "PLAINTEXT", "Value": { "Ref": "CloudFrontStart" } }
+					{ "Name": "S3_BUCKET_FRONT_PORCH_SITE", "Type": "PLAINTEXT", "Value": { "Ref": "S3WebpageFrontPorch" } },
+					{ "Name": "S3_BUCKET_FRONT_PORCH_UPLOADS", "Type": "PLAINTEXT", "Value": { "Ref": "S3FrontPorchUploads" } },
+					{ "Name": "DISTRIBUTION_ID", "Type": "PLAINTEXT", "Value": { "Ref": "CloudFrontStart" } },
+					{ "Name": "YEAR_ESTABLISHED", "Type": "PLAINTEXT", "Value": { "Ref": "YearEstablishedParam" } },
+					{ "Name": "COMPANY_NAME", "Type": "PLAINTEXT", "Value": { "Ref": "CompanyNameParam" } },
+					{ "Name": "AWS_REGION", "Type": "PLAINTEXT", "Value": { "Ref": "AWS::Region" } },
+					{ "Name": "COGNITO_IDENTITY_POOL_ID", "Type": "PLAINTEXT", "Value": { "Ref": "CognitoIdentityPool" } }
 				]
 			}
 		}

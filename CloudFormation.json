@@ -6,12 +6,16 @@
 			"Description": "The S3 bucket name where CodePipeline will store the artifacts (this is needed only by CP to work, and pass task results to the next stage).",
 			"Type": "String"
 		},
-		"CompanyName": {
+		"CompanyNameParam": {
 			"Description": "The legal name of your company.",
 			"Type": "String"
 		},
 		"GitHubToken": {
 			"Description": "You need to create a Personal access tokens (https://github.com/settings/tokens) for CodePipeline to have access to the GitHub repo despite it being public.",
+			"Type": "String"
+		},
+		"YearEstablishedParam": {
+			"Description": "The year in which the company was created.",
 			"Type": "String"
 		},
 		"CertificateARN": {
@@ -26,10 +30,6 @@
 				"development"
 			],
 			"Default": "development"
-		},
-		"YearEstablished": {
-			"Description": "The year in which the company was created.",
-			"Type": "String"
 		},
 		"DomainHomePage": {
 			"Description": "Type your domain for your project",
@@ -120,6 +120,50 @@
 				}
 			}
 		},
+		"S3WebpageFrontPorchPolicy": {
+			"Type": "AWS::S3::BucketPolicy",
+			"Properties": {
+				"Bucket": {
+					"Ref": "S3WebpageFrontPorch"
+				},
+				"PolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Sid": "PublicReadGetObject",
+							"Effect": "Allow",
+							"Principal": "*",
+							"Action": "s3:GetObject",
+							"Resource": {
+								"Fn::Sub": "arn:aws:s3:::${S3WebpageFrontPorch}/*"
+							}
+						}
+					]
+				}
+			}
+		},
+		"S3FrontPorchUploads": {
+			"Type": "AWS::S3::Bucket",
+			"Properties": {
+				"BucketName": "0x4447-front-porch-uploads",
+				"CorsConfiguration": {
+					"CorsRules": [
+						{
+							"AllowedHeaders": [
+								"*"
+							],
+							"AllowedMethods": [
+								"PUT"
+							],
+							"AllowedOrigins": [
+								"*"
+							],
+							"MaxAge": 3000
+						}
+					]
+				}
+			}
+		},
 		"S3WebpageFrontPorch": {
 			"Type": "AWS::S3::Bucket",
 			"Properties": {
@@ -149,28 +193,6 @@
 				}
 			}
 		},
-		"S3WebpageFrontPorchPolicy": {
-			"Type": "AWS::S3::BucketPolicy",
-			"Properties": {
-				"Bucket": {
-					"Ref": "S3WebpageFrontPorch"
-				},
-				"PolicyDocument": {
-					"Version": "2012-10-17",
-					"Statement": [
-						{
-							"Sid": "PublicReadGetObject",
-							"Effect": "Allow",
-							"Principal": "*",
-							"Action": "s3:GetObject",
-							"Resource": {
-								"Fn::Sub": "arn:aws:s3:::${S3WebpageFrontPorch}/*"
-							}
-						}
-					]
-				}
-			}
-		},
 		"CodeBuildWebpageFrontPorch": {
 			"Type": "AWS::CodeBuild::Project",
 			"Properties": {
@@ -195,10 +217,17 @@
 					"Image": "aws/codebuild/nodejs:8.11.0",
 					"EnvironmentVariables": [
 						{
-							"Name": "S3_BUCKET",
+							"Name": "S3_BUCKET_FRONT_PORCH_SITE",
 							"Type": "PLAINTEXT",
 							"Value": {
 								"Ref": "S3WebpageFrontPorch"
+							}
+						},
+						{
+							"Name": "S3_BUCKET_FRONT_PORCH_UPLOADS",
+							"Type": "PLAINTEXT",
+							"Value": {
+								"Ref": "S3FrontPorchUploads"
 							}
 						},
 						{
@@ -206,6 +235,34 @@
 							"Type": "PLAINTEXT",
 							"Value": {
 								"Ref": "CloudFrontStart"
+							}
+						},
+						{
+							"Name": "YEAR_ESTABLISHED",
+							"Type": "PLAINTEXT",
+							"Value": {
+								"Ref": "YearEstablishedParam"
+							}
+						},
+						{
+							"Name": "COMPANY_NAME",
+							"Type": "PLAINTEXT",
+							"Value": {
+								"Ref": "CompanyNameParam"
+							}
+						},
+						{
+							"Name": "AWS_REGION",
+							"Type": "PLAINTEXT",
+							"Value": {
+								"Ref": "AWS::Region"
+							}
+						},
+						{
+							"Name": "COGNITO_IDENTITY_POOL_ID",
+							"Type": "PLAINTEXT",
+							"Value": {
+								"Ref": "CognitoIdentityPool"
 							}
 						}
 					]
@@ -354,6 +411,162 @@
 				}
 			}
 		},
+		"CognitoIdentityPool": {
+			"Type": "AWS::Cognito::IdentityPool",
+			"Properties": {
+				"IdentityPoolName": {
+					"Ref": "DomainHomePage"
+				},
+				"AllowUnauthenticatedIdentities": true
+			}
+		},
+		"CognitoIdentityPoolPolicyLCF": {
+			"Type": "AWS::IAM::Policy",
+			"Properties": {
+				"PolicyName": "s3",
+				"Roles": [
+					{
+						"Ref": "CognitoIDPUnauthenticatedRole"
+					}
+				],
+				"PolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Action": "s3:PutObject",
+							"Resource": {
+								"Fn::Sub": "arn:aws:s3:::${S3FrontPorchUploads}/*"
+							}
+						}
+					]
+				}
+			}
+		},
+		"CognitoIDPAuthenticatedRole": {
+			"Type": "AWS::IAM::Role",
+			"Properties": {
+				"RoleName": "cognito_identitypool_authenticated",
+				"AssumeRolePolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Principal": {
+								"Federated": "cognito-identity.amazonaws.com"
+							},
+							"Action": "sts:AssumeRoleWithWebIdentity",
+							"Condition": {
+								"StringEquals": {
+									"cognito-identity.amazonaws.com:aud": {
+										"Ref": "CognitoIdentityPool"
+									}
+								},
+								"ForAnyValue:StringLike": {
+									"cognito-identity.amazonaws.com:amr": "authenticated"
+								}
+							}
+						}
+					]
+				}
+			}
+		},
+		"CognitoIDPUnauthenticatedRole": {
+			"Type": "AWS::IAM::Role",
+			"Properties": {
+				"RoleName": "cognito_identitypool_unauthenticated",
+				"AssumeRolePolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Principal": {
+								"Federated": "cognito-identity.amazonaws.com"
+							},
+							"Action": "sts:AssumeRoleWithWebIdentity",
+							"Condition": {
+								"StringEquals": {
+									"cognito-identity.amazonaws.com:aud": {
+										"Ref": "CognitoIdentityPool"
+									}
+								},
+								"ForAnyValue:StringLike": {
+									"cognito-identity.amazonaws.com:amr": "unauthenticated"
+								}
+							}
+						}
+					]
+				}
+			}
+		},
+		"CognitoIdentityPoolRoleAttachment": {
+			"Type": "AWS::Cognito::IdentityPoolRoleAttachment",
+			"Properties": {
+				"IdentityPoolId": {
+					"Ref": "CognitoIdentityPool"
+				},
+				"Roles": {
+					"authenticated": {
+						"Fn::GetAtt": [
+							"CognitoIDPAuthenticatedRole",
+							"Arn"
+						]
+					},
+					"unauthenticated": {
+						"Fn::GetAtt": [
+							"CognitoIDPUnauthenticatedRole",
+							"Arn"
+						]
+					}
+				}
+			}
+		},
+		"PipelineWebpageFrontPorchWebhook": {
+			"Type": "AWS::CodePipeline::Webhook",
+			"Properties": {
+				"Authentication": "GITHUB_HMAC",
+				"AuthenticationConfiguration": {
+					"SecretToken": {
+						"Ref": "GitHubToken"
+					}
+				},
+				"Filters": [
+					{
+						"JsonPath": "$.ref",
+						"MatchEquals": "refs/heads/{Branch}"
+					}
+				],
+				"TargetPipeline": {
+					"Ref": "PipelineWebpageFrontPorch"
+				},
+				"TargetAction": "Material",
+				"TargetPipelineVersion": {
+					"Fn::GetAtt": [
+						"PipelineWebpageFrontPorch",
+						"Version"
+					]
+				},
+				"RegisterWithThirdParty": true
+			}
+		},
+		"PipelineWebpageFrontPorchRole": {
+			"Type": "AWS::IAM::Role",
+			"Properties": {
+				"RoleName": "webpage_front_porch_codepipeline",
+				"AssumeRolePolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Principal": {
+								"Service": "codepipeline.amazonaws.com"
+							},
+							"Action": "sts:AssumeRole"
+						}
+					]
+				}
+			}
+		},
 		"PipelineWebpageFrontPorch": {
 			"Type": "AWS::CodePipeline::Pipeline",
 			"Properties": {
@@ -428,52 +641,6 @@
 						]
 					}
 				]
-			}
-		},
-		"PipelineWebpageFrontPorchRole": {
-			"Type": "AWS::IAM::Role",
-			"Properties": {
-				"RoleName": "webpage_front_porch_codepipeline",
-				"AssumeRolePolicyDocument": {
-					"Version": "2012-10-17",
-					"Statement": [
-						{
-							"Effect": "Allow",
-							"Principal": {
-								"Service": "codepipeline.amazonaws.com"
-							},
-							"Action": "sts:AssumeRole"
-						}
-					]
-				}
-			}
-		},
-		"PipelineWebpageFrontPorchWebhook": {
-			"Type": "AWS::CodePipeline::Webhook",
-			"Properties": {
-				"Authentication": "GITHUB_HMAC",
-				"AuthenticationConfiguration": {
-					"SecretToken": {
-						"Ref": "GitHubToken"
-					}
-				},
-				"Filters": [
-					{
-						"JsonPath": "$.ref",
-						"MatchEquals": "refs/heads/{Branch}"
-					}
-				],
-				"TargetPipeline": {
-					"Ref": "PipelineWebpageFrontPorch"
-				},
-				"TargetAction": "Material",
-				"TargetPipelineVersion": {
-					"Fn::GetAtt": [
-						"PipelineWebpageFrontPorch",
-						"Version"
-					]
-				},
-				"RegisterWithThirdParty": true
 			}
 		},
 		"PipelineWebpageFrontPorchPolicyCB": {

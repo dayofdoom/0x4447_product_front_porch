@@ -1,0 +1,9 @@
+{
+	"CognitoIdentityPool": {
+		"Type": "AWS::Cognito::IdentityPool",
+		"Properties": {
+			"IdentityPoolName": { "Ref": "DomainHomePage" },
+			"AllowUnauthenticatedIdentities": true
+		}
+	}
+}

@@ -1,5 +1,5 @@
 {
-	"CompanyName": {
+	"CompanyNameParam": {
 		"Description": "The legal name of your company.",
 		"Type": "String"
 	}

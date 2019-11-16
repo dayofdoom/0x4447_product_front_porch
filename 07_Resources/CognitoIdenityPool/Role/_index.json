@@ -1,0 +1,12 @@
+{
+	"CognitoIdentityPoolRoleAttachment": {
+		"Type": "AWS::Cognito::IdentityPoolRoleAttachment",
+		"Properties": {
+			"IdentityPoolId": { "Ref": "CognitoIdentityPool" },
+			"Roles": {
+				"authenticated":  { "Fn::GetAtt": ["CognitoIDPAuthenticatedRole", "Arn"] },
+				"unauthenticated": { "Fn::GetAtt": ["CognitoIDPUnauthenticatedRole", "Arn"] }
+			}
+		}
+	}
+}
