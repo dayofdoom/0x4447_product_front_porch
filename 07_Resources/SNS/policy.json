@@ -1,0 +1,26 @@
+{
+	"SNSTopicPolicy": {
+		"Type": "AWS::SNS::TopicPolicy",
+		"Properties": {
+			"Topics": [ { "Ref": "SNSTopic" } ],
+			"PolicyDocument": {
+				"Version": "2012-10-17",
+				"Statement": [
+					{
+						"Effect": "Allow",
+						"Principal" : {
+							"Service": "s3.amazonaws.com"
+						},
+						"Action": "SNS:Publish",
+						"Resource": "*",
+						"Condition": {
+							"ArnLike": {
+								"aws:SourceArn": { "Fn::Sub": "arn:aws:s3:*:*:*" }
+							}
+						}
+					}
+				]
+			}
+		}
+	}
+}

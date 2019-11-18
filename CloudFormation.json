@@ -14,20 +14,20 @@
 			"Description": "The year in which the company was created.",
 			"Type": "String"
 		},
-		"CertificateARN": {
-			"Description": "The ARN of a SSL Certificate.",
-			"Type": "String"
-		},
-		"GitHubToken": {
-			"Description": "You need to create a Personal access tokens (https://github.com/settings/tokens) for CodePipeline to have access to the GitHub repo despite it being public.",
-			"Type": "String"
-		},
 		"DomainHomePage": {
 			"Description": "Type your domain for your project",
 			"Type": "String"
 		},
 		"ExpirationDayParam": {
 			"Description": "After how many days would you like the uploaded files to be removed?",
+			"Type": "String"
+		},
+		"GitHubToken": {
+			"Description": "You need to create a Personal access tokens (https://github.com/settings/tokens) for CodePipeline to have access to the GitHub repo despite it being public.",
+			"Type": "String"
+		},
+		"CertificateARN": {
+			"Description": "The ARN of a SSL Certificate.",
 			"Type": "String"
 		},
 		"Stage": {
@@ -124,395 +124,81 @@
 				}
 			}
 		},
-		"S3WebpageFrontPorchPolicy": {
-			"Type": "AWS::S3::BucketPolicy",
+		"SNSTopic": {
+			"Type": "AWS::SNS::Topic",
 			"Properties": {
-				"Bucket": {
-					"Ref": "S3WebpageFrontPorch"
-				},
-				"PolicyDocument": {
-					"Version": "2012-10-17",
-					"Statement": [
-						{
-							"Effect": "Allow",
-							"Principal": "*",
-							"Action": "s3:GetObject",
-							"Resource": {
-								"Fn::Sub": "arn:aws:s3:::${S3WebpageFrontPorch}/*"
-							}
-						}
-					]
+				"DisplayName": {
+					"Fn::Sub": "${AWS::StackName}"
 				}
 			}
 		},
-		"S3FrontPorchDatabase": {
-			"Type": "AWS::S3::Bucket",
+		"SNSTopicPolicy": {
+			"Type": "AWS::SNS::TopicPolicy",
 			"Properties": {
-				"BucketName": {
-					"Fn::Sub": "${DomainHomePage}-database"
-				},
-				"CorsConfiguration": {
-					"CorsRules": [
-						{
-							"AllowedHeaders": [
-								"*"
-							],
-							"AllowedMethods": [
-								"POST"
-							],
-							"AllowedOrigins": [
-								"*"
-							],
-							"MaxAge": 3000
-						}
-					]
-				},
-				"PublicAccessBlockConfiguration": {
-					"BlockPublicAcls": true,
-					"BlockPublicPolicy": true,
-					"IgnorePublicAcls": true,
-					"RestrictPublicBuckets": true
-				},
-				"Tags": [
+				"Topics": [
 					{
-						"Key": "Project Name",
-						"Value": "Front Porch"
-					},
-					{
-						"Key": "Author",
-						"Value": "0x4447 LLC"
-					},
-					{
-						"Key": "Info",
-						"Value": "https://0x4447.com"
+						"Ref": "SNSTopic"
 					}
-				]
-			}
-		},
-		"S3FrontPorchUploads": {
-			"Type": "AWS::S3::Bucket",
-			"Properties": {
-				"BucketName": {
-					"Fn::Sub": "${DomainHomePage}-uploads"
-				},
-				"CorsConfiguration": {
-					"CorsRules": [
-						{
-							"AllowedHeaders": [
-								"*"
-							],
-							"AllowedMethods": [
-								"PUT"
-							],
-							"AllowedOrigins": [
-								"*"
-							],
-							"MaxAge": 3000
-						}
-					]
-				},
-				"PublicAccessBlockConfiguration": {
-					"BlockPublicAcls": true,
-					"BlockPublicPolicy": true,
-					"IgnorePublicAcls": true,
-					"RestrictPublicBuckets": true
-				},
-				"LifecycleConfiguration": {
-					"Rules": [
-						{
-							"Id": "ExpiationDay",
-							"ExpirationInDays": {
-								"Ref": "ExpirationDayParam"
-							},
-							"NoncurrentVersionExpirationInDays": {
-								"Ref": "ExpirationDayParam"
-							},
-							"Status": "Enabled"
-						}
-					]
-				},
-				"Tags": [
-					{
-						"Key": "Project Name",
-						"Value": "Front Porch"
-					},
-					{
-						"Key": "Author",
-						"Value": "0x4447 LLC"
-					},
-					{
-						"Key": "Info",
-						"Value": "https://0x4447.com"
-					}
-				]
-			}
-		},
-		"S3WebpageFrontPorch": {
-			"Type": "AWS::S3::Bucket",
-			"Properties": {
-				"AccessControl": "PublicRead",
-				"BucketName": {
-					"Ref": "DomainHomePage"
-				},
-				"CorsConfiguration": {
-					"CorsRules": [
-						{
-							"AllowedHeaders": [
-								"Authorization"
-							],
-							"AllowedMethods": [
-								"GET"
-							],
-							"AllowedOrigins": [
-								"*"
-							],
-							"MaxAge": 3000
-						}
-					]
-				},
-				"WebsiteConfiguration": {
-					"ErrorDocument": "error",
-					"IndexDocument": "home"
-				},
-				"Tags": [
-					{
-						"Key": "Project Name",
-						"Value": "Front Porch"
-					},
-					{
-						"Key": "Author",
-						"Value": "0x4447 LLC"
-					},
-					{
-						"Key": "Info",
-						"Value": "https://0x4447.com"
-					}
-				]
-			}
-		},
-		"CodeBuildWebpageFrontPorchRole": {
-			"Type": "AWS::IAM::Role",
-			"Properties": {
-				"RoleName": "webpage_front_porch_codebuild",
-				"AssumeRolePolicyDocument": {
+				],
+				"PolicyDocument": {
 					"Version": "2012-10-17",
 					"Statement": [
 						{
 							"Effect": "Allow",
 							"Principal": {
-								"Service": "codebuild.amazonaws.com"
+								"Service": "s3.amazonaws.com"
 							},
-							"Action": "sts:AssumeRole"
-						}
-					]
-				}
-			}
-		},
-		"CodeBuildWebpageFrontPorch": {
-			"Type": "AWS::CodeBuild::Project",
-			"Properties": {
-				"Name": "webpage_front_porch",
-				"ServiceRole": {
-					"Fn::GetAtt": [
-						"CodeBuildWebpageFrontPorchRole",
-						"Arn"
-					]
-				},
-				"TimeoutInMinutes": 60,
-				"Source": {
-					"Type": "CODEPIPELINE",
-					"BuildSpec": "buildspec.yml"
-				},
-				"Artifacts": {
-					"Type": "CODEPIPELINE"
-				},
-				"Environment": {
-					"Type": "LINUX_CONTAINER",
-					"ComputeType": "BUILD_GENERAL1_SMALL",
-					"Image": "aws/codebuild/nodejs:8.11.0",
-					"EnvironmentVariables": [
-						{
-							"Name": "S3_BUCKET_FRONT_PORCH_SITE",
-							"Type": "PLAINTEXT",
-							"Value": {
-								"Ref": "S3WebpageFrontPorch"
-							}
-						},
-						{
-							"Name": "S3_BUCKET_FRONT_PORCH_UPLOADS",
-							"Type": "PLAINTEXT",
-							"Value": {
-								"Ref": "S3FrontPorchUploads"
-							}
-						},
-						{
-							"Name": "S3_BUCKET_FRONT_PORCH_DATABASE",
-							"Type": "PLAINTEXT",
-							"Value": {
-								"Ref": "S3FrontPorchDatabase"
-							}
-						},
-						{
-							"Name": "DISTRIBUTION_ID",
-							"Type": "PLAINTEXT",
-							"Value": {
-								"Ref": "CloudFrontStart"
-							}
-						},
-						{
-							"Name": "YEAR_ESTABLISHED",
-							"Type": "PLAINTEXT",
-							"Value": {
-								"Ref": "YearEstablishedParam"
-							}
-						},
-						{
-							"Name": "COMPANY_NAME",
-							"Type": "PLAINTEXT",
-							"Value": {
-								"Ref": "CompanyNameParam"
-							}
-						},
-						{
-							"Name": "AWS_REGION",
-							"Type": "PLAINTEXT",
-							"Value": {
-								"Ref": "AWS::Region"
-							}
-						},
-						{
-							"Name": "COGNITO_IDENTITY_POOL_ID",
-							"Type": "PLAINTEXT",
-							"Value": {
-								"Ref": "CognitoIdentityPool"
+							"Action": "SNS:Publish",
+							"Resource": "*",
+							"Condition": {
+								"ArnLike": {
+									"aws:SourceArn": {
+										"Fn::Sub": "arn:aws:s3:*:*:*"
+									}
+								}
 							}
 						}
 					]
 				}
 			}
 		},
-		"CodeBuildWebpageFrontPorchPolicyCloudFrontCreateInvalidation": {
-			"Type": "AWS::IAM::Policy",
+		"IAMGroup": {
+			"Type": "AWS::IAM::Group",
 			"Properties": {
-				"Roles": [
+				"GroupName": "0x4447_front_porch",
+				"Policies": [
 					{
-						"Ref": "CodeBuildWebpageFrontPorchRole"
-					}
-				],
-				"PolicyName": "cloud_front_invalidate",
-				"PolicyDocument": {
-					"Version": "2012-10-17",
-					"Statement": [
-						{
-							"Effect": "Allow",
-							"Action": [
-								"cloudfront:CreateInvalidation"
-							],
-							"Resource": "*"
-						}
-					]
-				}
-			}
-		},
-		"CodeBuildWebpageFrontPorchPolicyCloudFrontList": {
-			"Type": "AWS::IAM::Policy",
-			"Properties": {
-				"Roles": [
-					{
-						"Ref": "CodeBuildWebpageFrontPorchRole"
-					}
-				],
-				"PolicyName": "cloud_front_list",
-				"PolicyDocument": {
-					"Version": "2012-10-17",
-					"Statement": [
-						{
-							"Effect": "Allow",
-							"Action": [
-								"cloudfront:ListDistributions"
-							],
-							"Resource": "*"
-						}
-					]
-				}
-			}
-		},
-		"CodeBuildWebpageFrontPorchPolicyCWL": {
-			"Type": "AWS::IAM::Policy",
-			"Properties": {
-				"Roles": [
-					{
-						"Ref": "CodeBuildWebpageFrontPorchRole"
-					}
-				],
-				"PolicyName": "cloud_watch_log_access",
-				"PolicyDocument": {
-					"Version": "2012-10-17",
-					"Statement": [
-						{
-							"Effect": "Allow",
-							"Action": [
-								"logs:CreateLogGroup",
-								"logs:CreateLogStream",
-								"logs:PutLogEvents"
-							],
-							"Resource": [
+						"PolicyName": "l_r_d",
+						"PolicyDocument": {
+							"Version": "2012-10-17",
+							"Statement": [
 								{
-									"Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/*"
+									"Effect": "Allow",
+									"Action": [
+										"s3:ListBucket",
+										"s3:GetObject",
+										"s3:DeleteObject",
+										"s3:GetObjectAcl",
+										"s3:GetObjectVersionAcl"
+									],
+									"Resource": [
+										{
+											"Fn::Sub": "arn:aws:s3:::${S3FrontPorchUploads}"
+										},
+										{
+											"Fn::Sub": "arn:aws:s3:::${S3FrontPorchUploads}/*"
+										}
+									]
+								},
+								{
+									"Effect": "Allow",
+									"Action": "s3:ListAllMyBuckets",
+									"Resource": "*"
 								}
 							]
 						}
-					]
-				}
-			}
-		},
-		"CodeBuildWebpageFrontPorchPolicyS3": {
-			"Type": "AWS::IAM::Policy",
-			"Properties": {
-				"Roles": [
-					{
-						"Ref": "CodeBuildWebpageFrontPorchRole"
 					}
-				],
-				"PolicyName": "s3_artifact_access",
-				"PolicyDocument": {
-					"Version": "2012-10-17",
-					"Statement": [
-						{
-							"Effect": "Allow",
-							"Action": "s3:*",
-							"Resource": {
-								"Fn::Sub": "arn:aws:s3:::${CodePipelineArtifacts}/*"
-							}
-						}
-					]
-				}
-			}
-		},
-		"CodeBuildWebpageFrontPorchPolicyS3Hosting": {
-			"Type": "AWS::IAM::Policy",
-			"Properties": {
-				"Roles": [
-					{
-						"Ref": "CodeBuildWebpageFrontPorchRole"
-					}
-				],
-				"PolicyName": "s3_hosting",
-				"PolicyDocument": {
-					"Version": "2012-10-17",
-					"Statement": [
-						{
-							"Effect": "Allow",
-							"Action": [
-								"s3:PutObject",
-								"s3:DeleteObject"
-							],
-							"Resource": {
-								"Fn::Sub": "arn:aws:s3:::${S3WebpageFrontPorch}/*"
-							}
-						}
-					]
-				}
+				]
 			}
 		},
 		"PipelineWebpageFrontPorch": {
@@ -686,6 +372,238 @@
 				}
 			}
 		},
+		"CodeBuildWebpageFrontPorch": {
+			"Type": "AWS::CodeBuild::Project",
+			"Properties": {
+				"Name": "webpage_front_porch",
+				"ServiceRole": {
+					"Fn::GetAtt": [
+						"CodeBuildWebpageFrontPorchRole",
+						"Arn"
+					]
+				},
+				"TimeoutInMinutes": 60,
+				"Source": {
+					"Type": "CODEPIPELINE",
+					"BuildSpec": "buildspec.yml"
+				},
+				"Artifacts": {
+					"Type": "CODEPIPELINE"
+				},
+				"Environment": {
+					"Type": "LINUX_CONTAINER",
+					"ComputeType": "BUILD_GENERAL1_SMALL",
+					"Image": "aws/codebuild/nodejs:8.11.0",
+					"EnvironmentVariables": [
+						{
+							"Name": "S3_BUCKET_FRONT_PORCH_SITE",
+							"Type": "PLAINTEXT",
+							"Value": {
+								"Ref": "S3WebpageFrontPorch"
+							}
+						},
+						{
+							"Name": "S3_BUCKET_FRONT_PORCH_UPLOADS",
+							"Type": "PLAINTEXT",
+							"Value": {
+								"Ref": "S3FrontPorchUploads"
+							}
+						},
+						{
+							"Name": "S3_BUCKET_FRONT_PORCH_DATABASE",
+							"Type": "PLAINTEXT",
+							"Value": {
+								"Ref": "S3FrontPorchDatabase"
+							}
+						},
+						{
+							"Name": "DISTRIBUTION_ID",
+							"Type": "PLAINTEXT",
+							"Value": {
+								"Ref": "CloudFrontStart"
+							}
+						},
+						{
+							"Name": "YEAR_ESTABLISHED",
+							"Type": "PLAINTEXT",
+							"Value": {
+								"Ref": "YearEstablishedParam"
+							}
+						},
+						{
+							"Name": "COMPANY_NAME",
+							"Type": "PLAINTEXT",
+							"Value": {
+								"Ref": "CompanyNameParam"
+							}
+						},
+						{
+							"Name": "AWS_REGION",
+							"Type": "PLAINTEXT",
+							"Value": {
+								"Ref": "AWS::Region"
+							}
+						},
+						{
+							"Name": "DOMAIN",
+							"Type": "PLAINTEXT",
+							"Value": {
+								"Ref": "DomainHomePage"
+							}
+						},
+						{
+							"Name": "COGNITO_IDENTITY_POOL_ID",
+							"Type": "PLAINTEXT",
+							"Value": {
+								"Ref": "CognitoIdentityPool"
+							}
+						}
+					]
+				}
+			}
+		},
+		"CodeBuildWebpageFrontPorchRole": {
+			"Type": "AWS::IAM::Role",
+			"Properties": {
+				"RoleName": "webpage_front_porch_codebuild",
+				"AssumeRolePolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Principal": {
+								"Service": "codebuild.amazonaws.com"
+							},
+							"Action": "sts:AssumeRole"
+						}
+					]
+				}
+			}
+		},
+		"CodeBuildWebpageFrontPorchPolicyCloudFrontCreateInvalidation": {
+			"Type": "AWS::IAM::Policy",
+			"Properties": {
+				"Roles": [
+					{
+						"Ref": "CodeBuildWebpageFrontPorchRole"
+					}
+				],
+				"PolicyName": "cloud_front_invalidate",
+				"PolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Action": [
+								"cloudfront:CreateInvalidation"
+							],
+							"Resource": "*"
+						}
+					]
+				}
+			}
+		},
+		"CodeBuildWebpageFrontPorchPolicyCloudFrontList": {
+			"Type": "AWS::IAM::Policy",
+			"Properties": {
+				"Roles": [
+					{
+						"Ref": "CodeBuildWebpageFrontPorchRole"
+					}
+				],
+				"PolicyName": "cloud_front_list",
+				"PolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Action": [
+								"cloudfront:ListDistributions"
+							],
+							"Resource": "*"
+						}
+					]
+				}
+			}
+		},
+		"CodeBuildWebpageFrontPorchPolicyCWL": {
+			"Type": "AWS::IAM::Policy",
+			"Properties": {
+				"Roles": [
+					{
+						"Ref": "CodeBuildWebpageFrontPorchRole"
+					}
+				],
+				"PolicyName": "cloud_watch_log_access",
+				"PolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Action": [
+								"logs:CreateLogGroup",
+								"logs:CreateLogStream",
+								"logs:PutLogEvents"
+							],
+							"Resource": [
+								{
+									"Fn::Sub": "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/*"
+								}
+							]
+						}
+					]
+				}
+			}
+		},
+		"CodeBuildWebpageFrontPorchPolicyS3": {
+			"Type": "AWS::IAM::Policy",
+			"Properties": {
+				"Roles": [
+					{
+						"Ref": "CodeBuildWebpageFrontPorchRole"
+					}
+				],
+				"PolicyName": "s3_artifact_access",
+				"PolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Action": "s3:*",
+							"Resource": {
+								"Fn::Sub": "arn:aws:s3:::${CodePipelineArtifacts}/*"
+							}
+						}
+					]
+				}
+			}
+		},
+		"CodeBuildWebpageFrontPorchPolicyS3Hosting": {
+			"Type": "AWS::IAM::Policy",
+			"Properties": {
+				"Roles": [
+					{
+						"Ref": "CodeBuildWebpageFrontPorchRole"
+					}
+				],
+				"PolicyName": "s3_hosting",
+				"PolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Action": [
+								"s3:PutObject",
+								"s3:DeleteObject"
+							],
+							"Resource": {
+								"Fn::Sub": "arn:aws:s3:::${S3WebpageFrontPorch}/*"
+							}
+						}
+					]
+				}
+			}
+		},
 		"CognitoIdentityPool": {
 			"Type": "AWS::Cognito::IdentityPool",
 			"Properties": {
@@ -693,6 +611,58 @@
 					"Ref": "DomainHomePage"
 				},
 				"AllowUnauthenticatedIdentities": true
+			}
+		},
+		"CognitoIdentityPoolPolicyLCF": {
+			"Type": "AWS::IAM::Policy",
+			"Properties": {
+				"PolicyName": "s3",
+				"Roles": [
+					{
+						"Ref": "CognitoIDPUnauthenticatedRole"
+					}
+				],
+				"PolicyDocument": {
+					"Version": "2012-10-17",
+					"Statement": [
+						{
+							"Effect": "Allow",
+							"Action": "s3:PutObject",
+							"Resource": {
+								"Fn::Sub": "arn:aws:s3:::${S3FrontPorchUploads}/*"
+							}
+						},
+						{
+							"Effect": "Allow",
+							"Action": "s3:GetObject",
+							"Resource": {
+								"Fn::Sub": "arn:aws:s3:::${S3FrontPorchDatabase}/emails.json"
+							}
+						}
+					]
+				}
+			}
+		},
+		"CognitoIdentityPoolRoleAttachment": {
+			"Type": "AWS::Cognito::IdentityPoolRoleAttachment",
+			"Properties": {
+				"IdentityPoolId": {
+					"Ref": "CognitoIdentityPool"
+				},
+				"Roles": {
+					"authenticated": {
+						"Fn::GetAtt": [
+							"CognitoIDPAuthenticatedRole",
+							"Arn"
+						]
+					},
+					"unauthenticated": {
+						"Fn::GetAtt": [
+							"CognitoIDPUnauthenticatedRole",
+							"Arn"
+						]
+					}
+				}
 			}
 		},
 		"CognitoIDPAuthenticatedRole": {
@@ -720,28 +690,6 @@
 							}
 						}
 					]
-				}
-			}
-		},
-		"CognitoIdentityPoolRoleAttachment": {
-			"Type": "AWS::Cognito::IdentityPoolRoleAttachment",
-			"Properties": {
-				"IdentityPoolId": {
-					"Ref": "CognitoIdentityPool"
-				},
-				"Roles": {
-					"authenticated": {
-						"Fn::GetAtt": [
-							"CognitoIDPAuthenticatedRole",
-							"Arn"
-						]
-					},
-					"unauthenticated": {
-						"Fn::GetAtt": [
-							"CognitoIDPUnauthenticatedRole",
-							"Arn"
-						]
-					}
 				}
 			}
 		},
@@ -773,30 +721,176 @@
 				}
 			}
 		},
-		"CognitoIdentityPoolPolicyLCF": {
-			"Type": "AWS::IAM::Policy",
+		"S3FrontPorchDatabase": {
+			"Type": "AWS::S3::Bucket",
 			"Properties": {
-				"PolicyName": "s3",
-				"Roles": [
+				"BucketName": {
+					"Fn::Sub": "${DomainHomePage}-database"
+				},
+				"CorsConfiguration": {
+					"CorsRules": [
+						{
+							"AllowedHeaders": [
+								"*"
+							],
+							"AllowedMethods": [
+								"POST"
+							],
+							"AllowedOrigins": [
+								"*"
+							],
+							"MaxAge": 3000
+						}
+					]
+				},
+				"PublicAccessBlockConfiguration": {
+					"BlockPublicAcls": true,
+					"BlockPublicPolicy": true,
+					"IgnorePublicAcls": true,
+					"RestrictPublicBuckets": true
+				},
+				"Tags": [
 					{
-						"Ref": "CognitoIDPUnauthenticatedRole"
+						"Key": "Project Name",
+						"Value": "Front Porch"
+					},
+					{
+						"Key": "Author",
+						"Value": "0x4447 LLC"
+					},
+					{
+						"Key": "Info",
+						"Value": "https://0x4447.com"
 					}
-				],
+				]
+			}
+		},
+		"S3FrontPorchUploads": {
+			"Type": "AWS::S3::Bucket",
+			"Properties": {
+				"BucketName": {
+					"Fn::Sub": "${DomainHomePage}-uploads"
+				},
+				"CorsConfiguration": {
+					"CorsRules": [
+						{
+							"AllowedHeaders": [
+								"*"
+							],
+							"AllowedMethods": [
+								"PUT"
+							],
+							"AllowedOrigins": [
+								"*"
+							],
+							"MaxAge": 3000
+						}
+					]
+				},
+				"PublicAccessBlockConfiguration": {
+					"BlockPublicAcls": true,
+					"BlockPublicPolicy": true,
+					"IgnorePublicAcls": true,
+					"RestrictPublicBuckets": true
+				},
+				"LifecycleConfiguration": {
+					"Rules": [
+						{
+							"Id": "ExpiationDay",
+							"ExpirationInDays": {
+								"Ref": "ExpirationDayParam"
+							},
+							"NoncurrentVersionExpirationInDays": {
+								"Ref": "ExpirationDayParam"
+							},
+							"Status": "Enabled"
+						}
+					]
+				},
+				"NotificationConfiguration": {
+					"TopicConfigurations": [
+						{
+							"Topic": {
+								"Ref": "SNSTopic"
+							},
+							"Event": "s3:ObjectCreated:Put"
+						}
+					]
+				},
+				"Tags": [
+					{
+						"Key": "Project Name",
+						"Value": "Front Porch"
+					},
+					{
+						"Key": "Author",
+						"Value": "0x4447 LLC"
+					},
+					{
+						"Key": "Info",
+						"Value": "https://0x4447.com"
+					}
+				]
+			}
+		},
+		"S3WebpageFrontPorch": {
+			"Type": "AWS::S3::Bucket",
+			"Properties": {
+				"AccessControl": "PublicRead",
+				"BucketName": {
+					"Ref": "DomainHomePage"
+				},
+				"CorsConfiguration": {
+					"CorsRules": [
+						{
+							"AllowedHeaders": [
+								"Authorization"
+							],
+							"AllowedMethods": [
+								"GET"
+							],
+							"AllowedOrigins": [
+								"*"
+							],
+							"MaxAge": 3000
+						}
+					]
+				},
+				"WebsiteConfiguration": {
+					"ErrorDocument": "error",
+					"IndexDocument": "home"
+				},
+				"Tags": [
+					{
+						"Key": "Project Name",
+						"Value": "Front Porch"
+					},
+					{
+						"Key": "Author",
+						"Value": "0x4447 LLC"
+					},
+					{
+						"Key": "Info",
+						"Value": "https://0x4447.com"
+					}
+				]
+			}
+		},
+		"S3WebpageFrontPorchPolicy": {
+			"Type": "AWS::S3::BucketPolicy",
+			"Properties": {
+				"Bucket": {
+					"Ref": "S3WebpageFrontPorch"
+				},
 				"PolicyDocument": {
 					"Version": "2012-10-17",
 					"Statement": [
 						{
 							"Effect": "Allow",
-							"Action": "s3:PutObject",
-							"Resource": {
-								"Fn::Sub": "arn:aws:s3:::${S3FrontPorchUploads}/*"
-							}
-						},
-						{
-							"Effect": "Allow",
+							"Principal": "*",
 							"Action": "s3:GetObject",
 							"Resource": {
-								"Fn::Sub": "arn:aws:s3:::${S3FrontPorchDatabase}/emails.json"
+								"Fn::Sub": "arn:aws:s3:::${S3WebpageFrontPorch}/*"
 							}
 						}
 					]

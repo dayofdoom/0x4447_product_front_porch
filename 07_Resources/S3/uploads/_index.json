@@ -29,6 +29,15 @@
 					}
 				]
 			},
+			"NotificationConfiguration": {
+				"TopicConfigurations": [
+					{
+
+						"Topic": { "Ref": "SNSTopic" },
+						"Event": "s3:ObjectCreated:Put"
+					}
+				]
+			},
 			"Tags": [
 				{
 					"Key" : "Project Name",
