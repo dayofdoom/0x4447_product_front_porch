@@ -8,7 +8,7 @@
 				"Type": "S3"
 			},
 			"RoleArn": { "Fn::GetAtt": ["PipelineWebpageFrontPorchRole", "Arn" ] },
-			"Stages": [
+			"StageParams": [
 				{
 					"Name": "Get",
 					"Actions": [
@@ -24,7 +24,7 @@
 							"Configuration": {
 								"Owner": "0x4447",
 								"Repo": "0x4447_product_front_porch_webpage",
-								"Branch": { "Ref": "Stage" },
+								"Branch": { "Ref": "StageParam" },
 								"PollForSourceChanges": false,
 								"OAuthToken": { "Ref": "GitHubToken" }
 							},
