@@ -1,6 +1,39 @@
 # 🥳 Placeholder
 
-Description.
+# DISCLAIMER!
+
+This stack is available to anyone at no cost, but on an as-is basis. 0x4447 LLC is not responsible for damages or costs of any kind that may occur when you use the stack. You take full responsibility when you use it.
+
+# How to deploy
+
+<a target="_blank" href="https://console.aws.amazon.com/cloudformation/home#/stacks/new?stackName=zer0x4447-Frontporch&templateURL=https://s3.amazonaws.com/0x4447-drive-cloudformation/frontporch.json">
+<img align="left" style="float: left; margin: 0 10px 0 0;" src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"></a>
+
+All you need to do to deploy this stack is click the button to the left and follow the instructions that CloudFormation provides in your AWS Dashboard. Alternatively you can download the CF file from [here](https://s3.amazonaws.com/0x4447-drive-cloudformation/s3-email.json).
+
+# What will deploy?
+
+![Front Porch Diagram](https://raw.githubusercontent.com/0x4447/0x4447-product-s3-email/assets/diagram.png)
+
+This deployment will create the following resources:
+
+- 1x CloudFront
+- 1x CodeBuilds
+- 1x CodePipelines
+- 1x Cognito Identity Pool
+- 1x IAM Group
+- 2x S3 Buckets
+- 1x SNS
+
+All project resources can be found [here](https://github.com/topics/0x4447-frontporch).
+
+# Pricing
+
+All resources deployed via this stack will cost you money based on requests to the site and ammount of file stored in S3.
+
+# How to work with this project
+
+When you want to deploy the stack, the only file you should be interested in is the `CloudFormation.json` file. If you'd like to modify the stack, we recommend that you use the [Grapes framework](https://github.com/0x4447/0x4447-cli-node-grapes), which was designed to make it easier to work with the CloudFormation file. If you'd like to keep your sanity, never edit the main CF file 🤪.
 
 # The End
 
