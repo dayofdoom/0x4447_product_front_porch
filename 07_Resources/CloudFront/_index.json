@@ -3,7 +3,7 @@
 		"Type": "AWS::CloudFront::Distribution",
 		"Properties": {
 			"DistributionConfig": {
-				"Comment": { "Ref": "DomainHomePage" },
+				"Comment": { "Ref": "DomainHomePageParam" },
 				"DefaultCacheBehavior": {
 					"ForwardedValues": {
 						"Cookies": {
@@ -32,7 +32,7 @@
 						"OriginSSLProtocols": ["TLSv1.1"]
 					}
 				}],
-				"Aliases": [ { "Fn::Sub": "${DomainHomePage}" } ],
+				"Aliases": [ { "Fn::Sub": "${DomainHomePageParam}" } ],
 				"ViewerCertificate": {
 					"AcmCertificateArn" : { "Ref": "CertificateARNParam" },
 					"SslSupportMethod": "sni-only"

@@ -2,7 +2,7 @@
 	"S3FrontPorchDatabase": {
 		"Type": "AWS::S3::Bucket",
 		"Properties": {
-			"BucketName": { "Fn::Sub": "${DomainHomePage}-database" },
+			"BucketName": { "Fn::Sub": "${DomainHomePageParam}-database" },
 			"CorsConfiguration": {
 				"CorsRules": [
 					{

@@ -2,7 +2,7 @@
 	"S3FrontPorchUploads": {
 		"Type": "AWS::S3::Bucket",
 		"Properties": {
-			"BucketName": { "Fn::Sub": "${DomainHomePage}-uploads" },
+			"BucketName": { "Fn::Sub": "${DomainHomePageParam}-uploads" },
 			"CorsConfiguration": {
 				"CorsRules": [
 					{
