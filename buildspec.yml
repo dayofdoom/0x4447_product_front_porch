@@ -9,4 +9,4 @@ phases:
       - grapes -s .
   post_build:
     finally:
-      - aws s3 cp ./CloudFormation.json s3://0x4447-drive-cloudformation/front_porch.json --acl public-read
+      - aws s3 cp ./CloudFormation.json s3://0x4447-drive-cloudformation/frontporch.json --acl public-read
