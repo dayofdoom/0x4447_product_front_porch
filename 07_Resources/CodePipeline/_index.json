@@ -26,7 +26,7 @@
 								"Repo": "0x4447_product_front_porch_webpage",
 								"Branch": { "Ref": "StageParam" },
 								"PollForSourceChanges": false,
-								"OAuthToken": { "Ref": "GitHubToken" }
+								"OAuthToken": { "Ref": "GitHubTokenParam" }
 							},
 							"OutputArtifacts": [
 								{
