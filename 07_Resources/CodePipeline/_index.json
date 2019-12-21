@@ -8,7 +8,7 @@
 				"Type": "S3"
 			},
 			"RoleArn": { "Fn::GetAtt": ["PipelineWebpageFrontPorchRole", "Arn" ] },
-			"StageParams": [
+			"Stages": [
 				{
 					"Name": "Get",
 					"Actions": [
