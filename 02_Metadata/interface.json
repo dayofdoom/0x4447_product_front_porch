@@ -1,0 +1,31 @@
+{
+	"AWS::CloudFormation::Interface" : {
+		"ParameterGroups": [
+			{
+				"Label" : { "default" : "Basics" },
+				"Parameters" : [ "CodePipelineArtifactsParam", "GitHubTokenParam", "StageParam" ]
+			},
+			{
+				"Label" : { "default" : "Website Setup" },
+				"Parameters" : [ "ExpirationDayParam", "DomainHomePageParam", "CertificateARNParam" ]
+			},
+			{
+				"Label" : { "default" : "Company Info" },
+				"Parameters" : [ "CompanyLogoParam", "CompanyNameParam", "YearEstablishedParam" ]
+			}
+		],
+		"ParameterLabels": {
+			"CodePipelineArtifactsParam": { "default" : "CodePipeline Artifacts" },
+			"GitHubTokenParam": { "default" : "GitHub Token" },
+			"StageParam": { "default" : "Deployment Stage" },
+
+			"CompanyLogoParam": { "default" : "Logo URL" },
+			"CompanyNameParam": { "default" : "Company Name" },
+			"YearEstablishedParam": { "default" : "Year Established" },
+
+			"DomainHomePageParam": { "default" : "Domain Name" },
+			"ExpirationDayParam": { "default" : "Expiration Days" },
+			"CertificateARNParam": { "default" : "SSL Certificate" }
+		}
+	}
+}

@@ -25,7 +25,8 @@
 					{ "Name": "COMPANY_NAME", "Type": "PLAINTEXT", "Value": { "Ref": "CompanyNameParam" } },
 					{ "Name": "AWS_REGION", "Type": "PLAINTEXT", "Value": { "Ref": "AWS::Region" } },
 					{ "Name": "DOMAIN", "Type": "PLAINTEXT", "Value": { "Ref": "DomainHomePage" } },
-					{ "Name": "COGNITO_IDENTITY_POOL_ID", "Type": "PLAINTEXT", "Value": { "Ref": "CognitoIdentityPool" } }
+					{ "Name": "COGNITO_IDENTITY_POOL_ID", "Type": "PLAINTEXT", "Value": { "Ref": "CognitoIdentityPool" } },
+					{ "Name": "COMPANY_LOGO_URL", "Type": "PLAINTEXT", "Value": { "Ref": "CompanyLogoParam" } }
 				]
 			}
 		}

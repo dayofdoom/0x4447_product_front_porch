@@ -1,5 +1,5 @@
 {
-	"DomainHomePage": {
+	"DomainHomePageParam": {
 		"Description": "Type your domain for your project",
 		"Type": "String"
 	}

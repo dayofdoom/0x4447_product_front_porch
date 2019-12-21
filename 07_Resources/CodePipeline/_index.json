@@ -4,7 +4,7 @@
 		"Properties": {
 			"Name": "webpage_front_porch",
 			"ArtifactStore": {
-				"Location": { "Ref": "CodePipelineArtifacts" },
+				"Location": { "Ref": "CodePipelineArtifactsParam" },
 				"Type": "S3"
 			},
 			"RoleArn": { "Fn::GetAtt": ["PipelineWebpageFrontPorchRole", "Arn" ] },
