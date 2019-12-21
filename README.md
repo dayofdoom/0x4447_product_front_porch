@@ -1,10 +1,10 @@
 # 📦 Frontporch
 
-![Frontporch Screen Shot](https://raw.githubusercontent.com/0x4447/0x4447_product_front_porch/assets/screen_shot.png)
-
 This project was design to allow anyone to drop a digital packaged in front of your digital front porch. Ideal when someone has a an issue sending a big file that dosen't fit an email, or when less technical people don't know how to share a file using Dropbox or other similar services.
 
 Just send your personal Frontporch URL, and that is it.
+
+![Frontporch Screen Shot](https://raw.githubusercontent.com/0x4447/0x4447_product_front_porch/assets/screen_shot.png)
 
 As security measure, not everyone will be able to drop a package. The site will query a special JSON file in S3 which have to contain a list of emails that can be used in the `To` filed. If no email is found the file upload won't work.
 
