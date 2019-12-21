@@ -1,8 +1,8 @@
 # 📦 Frontporch
 
-This project was design to allow anyone to drop a digital packaged in front of your digital front porch. Ideal when someone has a an issue sending a big file that dosen't fit an email, or when less technical people don't know how to share a file using Dropbox or other similar services. 
+This project was design to allow anyone to drop a digital packaged in front of your digital front porch. Ideal when someone has a an issue sending a big file that dosen't fit an email, or when less technical people don't know how to share a file using Dropbox or other similar services.
 
-Just send your personal Frontporch URL, and that is it. 
+Just send your personal Frontporch URL, and that is it.
 
 As security measure, not everyone will be able to drop a package. The site will query a special JSON file in S3 which have to contain a list of emails that can be used in the `To` filed. If no email is found the file upload won't work.
 
@@ -17,11 +17,11 @@ This stack is available to anyone at no cost, but on an as-is basis. 0x4447 LLC 
 <a target="_blank" href="https://console.aws.amazon.com/cloudformation/home#/stacks/new?stackName=zer0x4447-Frontporch&templateURL=https://s3.amazonaws.com/0x4447-drive-cloudformation/frontporch.json">
 <img align="left" style="float: left; margin: 0 10px 0 0;" src="https://s3.amazonaws.com/cloudformation-examples/cloudformation-launch-stack.png"></a>
 
-All you need to do to deploy this stack is click the button to the left and follow the instructions that CloudFormation provides in your AWS Dashboard. Alternatively you can download the CF file from [here](https://s3.amazonaws.com/0x4447-drive-cloudformation/s3-email.json).
+All you need to do to deploy this stack is click the button to the left and follow the instructions that CloudFormation provides in your AWS Dashboard. Alternatively you can download the CF file from [here](https://s3.amazonaws.com/0x4447-drive-cloudformation/frontporch.json).
 
 # What will deploy?
 
-![Front Porch Diagram](https://raw.githubusercontent.com/0x4447/0x4447-product-s3-email/assets/diagram.png)
+![Front Porch Diagram](https://raw.githubusercontent.com/0x4447/0x4447_product_front_porch/assets/diagram.png)
 
 This deployment will create the following resources:
 
