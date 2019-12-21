@@ -10,7 +10,7 @@ Lastly thanks to a SNS topic you will be notified every time there is a new file
 
 # DISCLAIMER!
 
-This stack is available to anyone at no cost, but on an as-is basis. 0x4447 LLC is not responsible for damages or costs of any kind that may occur when you use the stack. You take full responsibility when you use it.
+This stack is available to anyone at no cost, but on an as-is basis. 0x4447, LLC. is not responsible for damages or costs of any kind that may occur when you use the stack. You take full responsibility when you use it.
 
 # How to deploy
 
@@ -37,6 +37,8 @@ All project resources can be found [here](https://github.com/topics/0x4447-front
 
 # Manual Work
 
+### Email Database
+
 After you deploy the stack, you will get a special bucket with a name that ends with `-database`. This bucket needs to contain a file called `emails.json`. The file should look something like this:
 
 ```
@@ -50,9 +52,13 @@ The key of the object is the simplified version of the email, and the value is h
 
 To update the file, download it from S3, add the new email or edit an existing one, and re-upload it by overwriting the original file in S3.
 
+### SNS Subscription
+
+Add your email to the created SNS subscription to receive notifications when a new file gets uploaded.
+
 # Pricing
 
-All resources deployed via this stack will cost you money based on requests to the site and ammount of file stored in S3.
+All resources deployed via this stack will cost you money based on requests to the site and amount of file stored in S3.
 
 # How to work with this project
 
