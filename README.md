@@ -1,4 +1,12 @@
-# 🥳 Placeholder
+# 📦 Frontporch
+
+This project was design to allow anyone to drop a digital packaged in front of your digital front porch. Ideal when someone has a an issue sending a big file that dosen't fit an email, or when less technical people don't know how to share a file using Dropbox or other similar services. 
+
+Just send your personal Frontporch URL, and that is it. 
+
+As security measure, not everyone will be able to drop a package. The site will query a special JSON file in S3 which have to contain a list of emails that can be used in the `To` filed. If no email is found the file upload won't work.
+
+Lastly thanks to a SNS topic you will be notified every time there is a new file uploaded.
 
 # DISCLAIMER!
 
@@ -22,10 +30,25 @@ This deployment will create the following resources:
 - 1x CodePipelines
 - 1x Cognito Identity Pool
 - 1x IAM Group
-- 2x S3 Buckets
+- 3x S3 Buckets
 - 1x SNS
 
 All project resources can be found [here](https://github.com/topics/0x4447-frontporch).
+
+# Manual Work
+
+After you deploy the stack, you will get a special bucket with a name that ends with `-database`. This bucket needs to contain a file called `emails.json`. The file should look something like this:
+
+```
+{
+	"bob_example_com": "bob@example.com",
+	"sara_example_com": "sara@example.com"
+}
+```
+
+The key of the object is the simplified version of the email, and the value is he full email. The S3 query will take the email in the `To` field from the site, strip it all out of the unnecessary characters, and then perform a query to see if we get something back. If we get back a result, we know the email is know to the sender and we will allow the upload process.
+
+To update the file, download it from S3, add the new email or edit an existing one, and re-upload it by overwriting the original file in S3.
 
 # Pricing
 
